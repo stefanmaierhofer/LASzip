@@ -1,0 +1,27 @@
+RESTRICTION: == net45
+NUGET
+  remote: https://api.nuget.org/v3/index.json
+    Aardvark.Base (3.0.42)
+      DevILSharp (>= 0.1.1 < 0.2)
+    DevILSharp (0.1.2)
+      FSharp.Core (>= 4.0 < 4.1)
+    FSharp.Core (4.0.0.1)
+    NUnit (3.8.1)
+    NUnit3TestAdapter (3.8)
+  remote: https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
+    Unofficial.laszip.net (2.2.0)
+
+GROUP Build
+CONTENT: NONE
+RESTRICTION: == net45
+NUGET
+  remote: https://api.nuget.org/v3/index.json
+    FAKE (4.63.2) - content: none
+    Mono.Cecil (0.10.0-beta6) - content: none
+    SourceLink.Fake (1.1) - content: none
+GITHUB
+  remote: aardvark-platform/aardvark.fake
+    FULLPROJECT (02934ce0408f1b142d08173c958a5501c36a8ff2)
+      FAKE (>= 4.63 < 4.64)
+      Mono.Cecil (>= 0.10.0-beta6 < 0.11)
+      SourceLink.Fake (>= 1.1 < 1.2)

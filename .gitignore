@@ -1,0 +1,17 @@
+*.swp
+*.userprefs
+**/obj
+**/Aardvark.log
+**/*.csproj.user
+/packages
+/src/packages
+!/packages/*.config
+/src/*.suo
+/bin/*.nupkg
+/src/.vs
+/sources.lock
+/paket-files
+/.fake
+/.paket/paket.exe
+bin/
+
