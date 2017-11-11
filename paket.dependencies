@@ -1,0 +1,18 @@
+framework:net45
+source https://api.nuget.org/v3/index.json
+
+// public repository
+nuget Aardvark.Base                     >= 3.0.42
+
+// 3rd-party
+nuget Unofficial.laszip.net             ~> 2.2.0
+nuget NUnit                             ~> 3.8.1
+nuget NUnit3TestAdapter                 ~> 3.8.0
+
+group Build
+framework:net45
+content: none
+source https://api.nuget.org/v3/index.json
+
+github aardvark-platform/aardvark.fake:standalone
+
