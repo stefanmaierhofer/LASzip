@@ -1,7 +1,7 @@
 RESTRICTION: == net45
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    Aardvark.Base (3.0.42)
+    Aardvark.Base (3.0.49)
       DevILSharp (>= 0.1.1 < 0.2)
     DevILSharp (0.1.2)
       FSharp.Core (>= 4.0 < 4.1)
@@ -16,11 +16,11 @@ RESTRICTION: == net45
 NUGET
   remote: https://api.nuget.org/v3/index.json
     FAKE (4.63.2) - content: none
-    Mono.Cecil (0.10.0-beta6) - content: none
+    Mono.Cecil (0.10.0-beta7) - content: none
     SourceLink.Fake (1.1) - content: none
 GITHUB
   remote: aardvark-platform/aardvark.fake
-    FULLPROJECT (02934ce0408f1b142d08173c958a5501c36a8ff2)
+    FULLPROJECT (0bd495d19630a51f886fb4a2374f64fe9088f09d)
       FAKE (>= 4.63 < 4.64)
       Mono.Cecil (>= 0.10.0-beta6 < 0.11)
       SourceLink.Fake (>= 1.1 < 1.2)
