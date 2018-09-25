@@ -40,6 +40,9 @@ namespace Example
                 ;
             var area = meta.Sum(x => x.bounds.Size.X * x.bounds.Size.Y) / 1000000.0;
             WriteLine($"area: {area:N3} km²");
+
+            var bbTotal = new Box3d(meta.Select(x => x.bounds));
+            WriteLine($"bounds: {bbTotal}");
         }
 
         static void Main(string[] args)
