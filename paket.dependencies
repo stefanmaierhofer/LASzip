@@ -1,16 +1,17 @@
-framework:net45
+framework:net471
 source https://api.nuget.org/v3/index.json
 
 // public repository
-nuget Aardvark.Base                     >= 3.0.42
+nuget Aardvark.Base                     >= 4.2.0
 
 // 3rd-party
 nuget Unofficial.laszip.net             ~> 2.2.0
 nuget NUnit                             ~> 3.8.1
 nuget NUnit3TestAdapter                 ~> 3.8.0
+nuget Newtonsoft.Json                   ~> 11.0.2
 
 group Build
-framework:net45
+framework:net471
 content: none
 source https://api.nuget.org/v3/index.json
 
