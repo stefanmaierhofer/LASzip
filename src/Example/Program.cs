@@ -26,8 +26,26 @@ namespace Example
 {
     class Program
     {
+        private static void Test()
+        {
+            var metaFileName = Path.GetFullPath(@"meta.json");
+            var meta = JArray
+                .Parse(File.ReadAllText(metaFileName))
+                .Select(x => (
+                    filename: (string)x["FileName"],
+                    count: (long)x["Count"],
+                    bounds: Box3d.Parse((string)x["Bounds"])
+                ))
+                .ToArray()
+                ;
+            var area = meta.Sum(x => x.bounds.Size.X * x.bounds.Size.Y) / 1000000.0;
+            WriteLine($"area: {area:N3} km²");
+        }
+
         static void Main(string[] args)
         {
+            Test(); return;
+
             var dirname = ".";
             if (args.Length == 1)
             {
@@ -83,7 +101,7 @@ namespace Example
             var metaFileName = Path.GetFullPath(@"meta.json");
             var json = JsonConvert.SerializeObject(meta, Formatting.Indented);
             File.WriteAllText(metaFileName, json);
-            WriteLine(json);
+            //WriteLine(json);
             WriteLine($"stored meta data: {metaFileName}");
         }
     }
