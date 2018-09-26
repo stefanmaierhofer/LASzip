@@ -71,8 +71,52 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
+        <Reference Include="Aardvark.Base.IO">
+          <HintPath>..\..\packages\Aardvark.Base.IO\lib\netstandard2.0\Aardvark.Base.IO.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
+      <ItemGroup>
         <Reference Include="Aardvark.Base.Telemetry">
           <HintPath>..\..\packages\Aardvark.Base.Telemetry\lib\netstandard2.0\Aardvark.Base.Telemetry.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
+      <ItemGroup>
+        <Reference Include="Aardvark.Data.E57">
+          <HintPath>..\..\packages\Aardvark.Data.E57\lib\netstandard2.0\Aardvark.Data.E57.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
+      <ItemGroup>
+        <Reference Include="Aardvark.Geometry.PointSet">
+          <HintPath>..\..\packages\Aardvark.Geometry.PointSet\lib\netstandard2.0\Aardvark.Geometry.PointSet.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
+      <ItemGroup>
+        <Reference Include="Aardvark.Geometry.PointTree">
+          <HintPath>..\..\packages\Aardvark.Geometry.PointTree\lib\netstandard2.0\Aardvark.Geometry.PointTree.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -117,6 +161,17 @@
       <ItemGroup>
         <Reference Include="System.Collections.Immutable">
           <HintPath>..\..\packages\System.Collections.Immutable\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
+      <ItemGroup>
+        <Reference Include="Uncodium.SimpleStore">
+          <HintPath>..\..\packages\Uncodium.SimpleStore\lib\netstandard2.0\Uncodium.SimpleStore.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

@@ -14,6 +14,7 @@
     limitations under the License.
  */
 using Aardvark.Base;
+using Aardvark.Geometry.Points;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -61,25 +62,31 @@ namespace Example
 
             var maxCount = 0L;
             var i = 0;
-            for (var cx = 13074 /*minIncl.X*/; cx < maxExcl.X; cx++)
+            for (var cx = minIncl.X; cx < maxExcl.X; cx++)
             {
-                for (var cy = 22057 /*minIncl.Y*/; cy < maxExcl.Y; cy++)
+                for (var cy = minIncl.Y; cy < maxExcl.Y; cy++)
                 {
                     var localCell = new Cell(cx, cy, 0, 8);
                     var localBounds = localCell.BoundingBox - OFFSET;
                     var candidates = meta.Where(x => x.bounds.Intersects(localBounds)).ToArray();
                     if (candidates.Length > 0)
                     {
+                        var key = $"cell_{localCell.X}_{localCell.Y}_{localCell.Z}_{localCell.Exponent}";
+
                         var sw = new Stopwatch(); sw.Start();
                         var localCount = candidates.Sum(x => x.count);
                         if (localCount > maxCount) maxCount = localCount;
-                        //var ps = candidates
-                        //    .Select(x => LASZip.Parser.ReadPoints(Path.Combine(dirname, x.filename), 1024 * 1024))
-                        //    .Select(x => x.SelectMany(chunk => chunk.Positions.Where(p => localBounds.Contains(p)).ToArray()).ToArray())
-                        //    .ToArray()
-                        //    ;
-                        WriteLine($"[{i,6:N0}] {localCell,6} -> {candidates.Length,6:N0} -> {localCount,15:N0}   ({sw.Elapsed})");
+                        var chunks = candidates
+                            .SelectMany(x => LASZip.Parser.ReadPoints(Path.Combine(dirname, x.filename), 16 * 1024 * 1024).Select(y => y.Filtered(localBounds.Contains)))
+                            .Select(x => new Chunk(x.Positions, x.Colors))
+                            .ToArray()
+                            ;
+                        if (chunks.Sum(x => x.Count) == 0) continue;
+                        WriteLine($"[{i,6:N0}] {localCell,6} -> {candidates.Length,6:N0} -> {localCount,15:N0}  {chunks.Sum(x => x.Count),15:N0}  ({sw.Elapsed})");
                         i++;
+
+                        var store = PointCloud.OpenStore($"T:/Koeln/{key}.bin");
+                        PointCloud.Chunks(chunks, ImportConfig.Default.WithStorage(store).WithKey(key));
                     }
                 }
             }

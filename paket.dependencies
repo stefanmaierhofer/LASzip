@@ -2,7 +2,8 @@ framework:net471
 source https://api.nuget.org/v3/index.json
 
 // public repository
-nuget Aardvark.Base                     >= 4.2.0
+nuget Aardvark.Base                     ~> 4.0.18
+nuget Aardvark.Geometry.PointSet        ~> 4.0.13
 
 // 3rd-party
 nuget Unofficial.laszip.net             ~> 2.2.0

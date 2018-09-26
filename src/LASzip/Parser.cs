@@ -13,6 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Aardvark.Base;
@@ -65,9 +66,27 @@ namespace LASZip
         /// <summary></summary>
         public Points(V3d[] positions, C4b[] colors, byte[] classifications)
         {
-            Positions = positions;
+            Positions = positions ?? new V3d[0];
             Colors = colors;
             Classifications = classifications;
+        }
+
+        /// <summary></summary>
+        public Points Filtered(Func<V3d, bool> filter)
+        {
+            var ps = new List<V3d>();
+            var cs = Colors != null ? new List<C4b>() : null;
+            var fs = Classifications != null ? new List<byte>() : null;
+            for (var i = 0; i < Positions.Length; i++)
+            {
+                if (filter(Positions[i]))
+                {
+                    ps.Add(Positions[i]);
+                    if (cs != null) cs.Add(Colors[i]);
+                    if (fs != null) fs.Add(Classifications[i]);
+                }
+            }
+            return new Points(ps.ToArray(), cs?.ToArray(), fs?.ToArray());
         }
     }
 
