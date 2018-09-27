@@ -13,7 +13,7 @@ nuget NUnit3TestAdapter                 ~> 3.8.0
 nuget Newtonsoft.Json                   ~> 11.0.2
 
 group Build
-framework:net471
+framework: netstandard2.0
 content: none
 source https://api.nuget.org/v3/index.json
 
