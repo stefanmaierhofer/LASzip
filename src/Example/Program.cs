@@ -15,7 +15,6 @@
  */
 using Aardvark.Base;
 using Aardvark.Data.Points;
-using Aardvark.Geometry.Points;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -28,7 +27,7 @@ using static System.Console;
 
 namespace Example
 {
-    class Program
+    static class Program
     {
         private static void Test(string dirname)
         {
@@ -64,6 +63,7 @@ namespace Example
 
             var maxCount = 0L;
             var i = 0;
+            var importConfig = ImportConfig.Default.WithMaxChunkPointCount(16 * 1024 * 1024);
             for (var cx = minIncl.X; cx < maxExcl.X; cx++)
             {
                 for (var cy = minIncl.Y; cy < maxExcl.Y; cy++)
@@ -92,7 +92,10 @@ namespace Example
                         var localCount = candidates.Sum(x => x.count);
                         if (localCount > maxCount) maxCount = localCount;
                         var chunks = candidates
-                            .SelectMany(x => LASZip.Parser.ReadPoints(Path.Combine(dirname, x.filename), 16 * 1024 * 1024).Select(y => y.Filtered(localBounds.Contains)))
+                            .SelectMany(x => Aardvark.Data.Points
+                                .Import.Laszip.Chunks(Path.Combine(dirname, x.filename), importConfig)
+                                .Select(y => y.ImmutableFilterByPosition(localBounds.Contains))
+                                )
                             .Where(x => x.Count > 0)
                             .Select(x => new Chunk(x.Positions, x.Colors))
                             .ToArray()
@@ -138,6 +141,24 @@ namespace Example
                 }
             }
             WriteLine(i);
+        }
+
+        static Chunk ImmutableFilterByPosition(this Chunk self, Func<V3d, bool> predicate)
+        {
+            if (!self.HasPositions) return self;
+
+            var ps = new List<V3d>();
+            var cs = self.Colors != null ? new List<C4b>() : null;
+
+            for (var i = 0; i < self.Positions.Count; i++)
+            {
+                if (predicate(self.Positions[i]))
+                {
+                    ps.Add(self.Positions[i]);
+                    if (cs != null) cs.Add(self.Colors[i]);
+                }
+            }
+            return new Chunk(ps, cs);
         }
 
         static void Main(string[] args)
