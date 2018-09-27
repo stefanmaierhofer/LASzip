@@ -1,18 +1,16 @@
 ﻿/*
-    Copyright 2017,2018. Stefan Maierhofer.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
- */
+    Copyright (C) 2017. Stefan Maierhofer.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -80,6 +78,31 @@ namespace LASZip
             for (var i = 0; i < Positions.Length; i++)
             {
                 if (filter(Positions[i]))
+                {
+                    ps.Add(Positions[i]);
+                    if (cs != null) cs.Add(Colors[i]);
+                    if (fs != null) fs.Add(Classifications[i]);
+                }
+            }
+            return new Points(ps.ToArray(), cs?.ToArray(), fs?.ToArray());
+        }
+
+        /// <summary></summary>
+        public Points Filtered(Func<V3d, V3d, bool> filter)
+        {
+            if (Count == 0) return this;
+
+            var ps = new List<V3d>();
+            var cs = Colors != null ? new List<C4b>() : null;
+            var fs = Classifications != null ? new List<byte>() : null;
+
+            ps.Add(Positions[0]);
+            if (cs != null) cs.Add(Colors[0]);
+            if (fs != null) fs.Add(Classifications[0]);
+
+            for (var i = 1; i < Positions.Length; i++)
+            {
+                if (filter(Positions[i - 1], Positions[i]))
                 {
                     ps.Add(Positions[i]);
                     if (cs != null) cs.Add(Colors[i]);

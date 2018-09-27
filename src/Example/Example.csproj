@@ -93,8 +93,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
-        <Reference Include="Aardvark.Data.E57">
-          <HintPath>..\..\packages\Aardvark.Data.E57\lib\netstandard2.0\Aardvark.Data.E57.dll</HintPath>
+        <Reference Include="Aardvark.Data.Points.Base">
+          <HintPath>..\..\packages\Aardvark.Data.Points.Base\lib\netstandard2.0\Aardvark.Data.Points.Base.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

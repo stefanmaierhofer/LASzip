@@ -14,6 +14,7 @@
     limitations under the License.
  */
 using Aardvark.Base;
+using Aardvark.Data.Points;
 using Aardvark.Geometry.Points;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using static System.Console;
 
@@ -66,6 +68,8 @@ namespace Example
             {
                 for (var cy = minIncl.Y; cy < maxExcl.Y; cy++)
                 {
+                    i++;
+
                     var localCell = new Cell(cx, cy, 0, 8);
                     var localBounds = localCell.BoundingBox - OFFSET;
                     var candidates = meta.Where(x => x.bounds.Intersects(localBounds)).ToArray();
@@ -73,20 +77,63 @@ namespace Example
                     {
                         var key = $"cell_{localCell.X}_{localCell.Y}_{localCell.Z}_{localCell.Exponent}";
 
+
+                        var targetFilename = $"G://{key}.bin";
+                        var targetFilenameTmp = $"{targetFilename}.tmp";
+                        if (File.Exists(targetFilename))
+                        {
+                            WriteLine($"[{i,6:N0}] {targetFilename} already exists");
+                            continue;
+                        }
+
+
+
                         var sw = new Stopwatch(); sw.Start();
                         var localCount = candidates.Sum(x => x.count);
                         if (localCount > maxCount) maxCount = localCount;
                         var chunks = candidates
                             .SelectMany(x => LASZip.Parser.ReadPoints(Path.Combine(dirname, x.filename), 16 * 1024 * 1024).Select(y => y.Filtered(localBounds.Contains)))
+                            .Where(x => x.Count > 0)
                             .Select(x => new Chunk(x.Positions, x.Colors))
                             .ToArray()
                             ;
                         if (chunks.Sum(x => x.Count) == 0) continue;
-                        WriteLine($"[{i,6:N0}] {localCell,6} -> {candidates.Length,6:N0} -> {localCount,15:N0}  {chunks.Sum(x => x.Count),15:N0}  ({sw.Elapsed})");
-                        i++;
 
-                        var store = PointCloud.OpenStore($"T:/Koeln/{key}.bin");
-                        PointCloud.Chunks(chunks, ImportConfig.Default.WithStorage(store).WithKey(key));
+                        //var store = PointCloud.OpenStore($"T:/Koeln/{key}.bin");
+                        //PointCloud.Chunks(chunks, ImportConfig.Default.WithStorage(store).WithKey(key));
+                        
+                        var countWritten = 0L;
+                        using (var f = File.OpenWrite(targetFilenameTmp))
+                        using (var z = new GZipStream(f, CompressionMode.Compress))
+                        using (var bw = new BinaryWriter(z))
+                        {
+                            var o = chunks.First().Positions[0];
+                            bw.Write(o.X); bw.Write(o.Y); bw.Write(o.Z);
+                            bw.Write(chunks.Sum(x => (long)x.Count));
+                            foreach (var chunk in chunks)
+                            {
+                                var chunk2 = chunk.ImmutableFilterSequentialMinDist(0.01);
+                                if (chunk2.Count == 0) continue;
+                                var ps = chunk2.Positions.Map(p => (V3f)(p - o).Round(2));
+                                for (var j = 0; j < ps.Length; j++)
+                                {
+                                    var p = ps[j];
+                                    bw.Write(p.X);
+                                    bw.Write(p.Y);
+                                    bw.Write(p.Z);
+                                    countWritten++;
+                                }
+                                for (var j = 0; j < chunk2.Count; j++)
+                                {
+                                    var c = chunk2.Colors[j];
+                                    bw.Write(c.R); bw.Write(c.G); bw.Write(c.B);
+                                }
+                            }
+                        }
+
+                        File.Move(targetFilenameTmp, targetFilename);
+
+                        WriteLine($"[{i,6:N0}] {localCell,6} -> {candidates.Length,6:N0} -> {localCount,15:N0}  {chunks.Sum(x => x.Count),15:N0}  {countWritten,15:N0}  ({sw.Elapsed})");
                     }
                 }
             }
