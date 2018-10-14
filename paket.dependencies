@@ -1,15 +1,14 @@
-framework:net471
+framework:netstandard2.0,netcore2.0
 source https://api.nuget.org/v3/index.json
 
 // public repository
-nuget Aardvark.Base                     ~> 4.2.0
-nuget Aardvark.Data.Points.Base         ~> 4.1.0-prerelease3
-nuget Aardvark.Geometry.PointSet        ~> 4.1.0-prerelease3
+nuget Aardvark.Base                     ~> 4.2.4
+nuget Aardvark.Data.Points.Base         ~> 4.3.0-prerelease1
+nuget Aardvark.Geometry.PointSet        ~> 4.3.0-prerelease1
 
 // 3rd-party
-nuget Unofficial.laszip.net             ~> 2.2.0
-nuget NUnit                             ~> 3.8.1
-nuget NUnit3TestAdapter                 ~> 3.8.0
+nuget Unofficial.laszip.netstandard     ~> 2.2.1
+nuget NUnit                             ~> 3.11.0
 nuget Newtonsoft.Json                   ~> 11.0.2
 
 group Build
