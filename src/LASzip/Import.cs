@@ -38,13 +38,15 @@ namespace Aardvark.Data.Points.Import
         /// Parses LASzip (.las, .laz) file.
         /// </summary>
         public static IEnumerable<Chunk> Chunks(string filename, ImportConfig config)
-            => LASZip.Parser.ReadPoints(filename, config.MaxChunkPointCount).Select(x => new Chunk(x.Positions, x.Colors));
+            => LASZip.Parser.ReadPoints(filename, config.MaxChunkPointCount)
+            .Select(x => new Chunk(x.Positions, x.Colors, null, null, x.Classifications));
 
         /// <summary>
         /// Parses LASzip (.las, .laz) stream.
         /// </summary>
         public static IEnumerable<Chunk> Chunks(this Stream stream, long streamLengthInBytes, ImportConfig config)
-            => LASZip.Parser.ReadPoints(stream, config.MaxChunkPointCount).Select(x => new Chunk(x.Positions, x.Colors));
+            => LASZip.Parser.ReadPoints(stream, config.MaxChunkPointCount)
+            .Select(x => new Chunk(x.Positions, x.Colors, null, null, x.Classifications));
 
         /// <summary>
         /// Gets general info for LASzip (.las, .laz) file.

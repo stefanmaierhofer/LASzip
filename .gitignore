@@ -15,3 +15,4 @@
 /.paket/paket.exe
 bin/
 
+/src/Example/Properties/launchSettings.json

@@ -69,16 +69,17 @@ namespace Example
                     Bounds = info.Bounds.ToString(),
                     Cell = cell.ToString()
                 }));
-                WriteLine($"[{i++,7}] {relativeFilename,-40} {info.Count,20:N0} {totalPointCount,20:N0}  {cell,10:0.00}");
-                //foreach (var ps in LASZip.Parser.ReadPoints(filename, 1024 * 1024))
-                //{
-                //    var bb = new Box3d(ps.Positions);
-                //    bounds2.ExtendBy(bb);
-                //    //WriteLine($"  chunk {ps.Count,20:N0} {bb,20}");
-                //    //WriteLine($"        {"",20:N0} {new Cell(bb),20}");
-                //}
 
-                //if (totalPointCount > 100000000) break;
+                WriteLine($"[{i++,7}] {relativeFilename,-40} {info.Count,20:N0} {totalPointCount,20:N0}  {cell,10:0.00}");
+                foreach (var ps in LASZip.Parser.ReadPoints(filename, 1024 * 1024))
+                {
+                    var bb = new Box3d(ps.Positions);
+                    bounds2.ExtendBy(bb);
+                    //WriteLine($"  chunk {ps.Count,20:N0} {bb,20}");
+                    //WriteLine($"        {"",20:N0} {new Cell(bb),20}");
+                }
+
+                if (totalPointCount > 100000000) break;
             }
             sw.Stop();
             WriteLine($"total point count: {totalPointCount:N0}");
@@ -179,7 +180,7 @@ namespace Example
                             bw.Write(chunks.Sum(x => (long)x.Count));
                             foreach (var chunk in chunks)
                             {
-                                var chunk2 = chunk.ImmutableFilterSequentialMinDist(0.01);
+                                var chunk2 = chunk.ImmutableFilterSequentialMinDistL1(0.01);
                                 if (chunk2.Count == 0) continue;
                                 var ps = chunk2.Positions.Map(p => (V3f)(p - o).Round(2));
                                 for (var j = 0; j < ps.Length; j++)
