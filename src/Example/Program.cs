@@ -15,7 +15,6 @@
  */
 using Aardvark.Base;
 using Aardvark.Data.Points;
-using Aardvark.Geometry.Points;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -128,7 +127,7 @@ namespace Example
 
             var maxCount = 0L;
             var i = 0;
-            var importConfig = ImportConfig.Default.WithMaxChunkPointCount(16 * 1024 * 1024);
+            var importConfig = ParseConfig.Default.WithMaxChunkPointCount(16 * 1024 * 1024);
             for (var cx = minIncl.X; cx < maxExcl.X; cx++)
             {
                 for (var cy = minIncl.Y; cy < maxExcl.Y; cy++)

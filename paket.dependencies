@@ -3,11 +3,9 @@ source https://api.nuget.org/v3/index.json
 
 nuget Aardvark.Base                     ~> 4
 
-nuget Aardvark.Data.Points.Base         ~> 4.6.0-prerelease4
-nuget Aardvark.Geometry.PointSet        ~> 4.6.0-prerelease4
+nuget Aardvark.Data.Points.Base         ~> 4.6
 
 nuget Unofficial.laszip.netstandard     ~> 2.2.1
-nuget NUnit                             ~> 3.11.0
 nuget Newtonsoft.Json                   ~> 11.0.2
 
 group Build
