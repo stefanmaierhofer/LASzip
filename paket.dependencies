@@ -1,17 +1,14 @@
-framework:netstandard2.0,netcore2.0
+framework: netstandard2.0, netcoreapp2.0
 source https://api.nuget.org/v3/index.json
 
-nuget Aardvark.Base                     ~> 4
-
-nuget Aardvark.Data.Points.Base         ~> 4.6
+nuget Aardvark.Base                     ~> 4.5.17
+nuget Aardvark.Data.Points.Base         ~> 4.9.15
 
 nuget Unofficial.laszip.netstandard     ~> 2.2.1
 nuget Newtonsoft.Json                   ~> 11.0.2
+nuget Microsoft.Build                   ~> 16.4.0
 
 group Build
-framework: netstandard2.0
-content: none
 source https://api.nuget.org/v3/index.json
-
-github aardvark-platform/aardvark.fake:v4-temp
+github aardvark-platform/aardvark.fake:v5
 
