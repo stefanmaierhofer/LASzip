@@ -1,8 +1,8 @@
 framework: netstandard2.0, netcoreapp2.0
 source https://api.nuget.org/v3/index.json
 
-nuget Aardvark.Base                     ~> 4.5.17
-nuget Aardvark.Data.Points.Base         ~> 4.9.15
+nuget Aardvark.Base                     ~> 4.5
+nuget Aardvark.Data.Points.Base         ~> 4.10
 
 nuget Unofficial.laszip.netstandard     ~> 2.2.1
 nuget Newtonsoft.Json                   ~> 11.0.2
