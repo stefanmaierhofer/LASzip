@@ -146,8 +146,14 @@ namespace LASZip
             var count = reader.header.number_of_point_records;
 
             var bounds = new Box3d(
-                new V3d(reader.header.min_x, reader.header.min_y, reader.header.min_z),
-                new V3d(reader.header.max_x, reader.header.max_y, reader.header.max_z)
+                new V3d(
+					reader.header.x_scale_factor * reader.header.min_x + reader.header.x_offset, 
+					reader.header.y_scale_factor * reader.header.min_y + reader.header.y_offset, 
+					reader.header.z_scale_factor * reader.header.min_z + reader.header.z_offset),
+                new V3d(
+					reader.header.x_scale_factor * reader.header.max_x + reader.header.x_offset, 
+					reader.header.y_scale_factor * reader.header.max_y + reader.header.y_offset, 
+					reader.header.z_scale_factor * reader.header.max_z + reader.header.z_offset)
                 );
 
             reader.laszip_close_reader();
