@@ -117,7 +117,7 @@ namespace Example
             bounds = bounds + OFFSET;
             if (bounds.Size.Z > TILE_SIZE) throw new InvalidOperationException();
 
-            var bb = new Box3d((bounds.Min / 256).Floor * 256, (bounds.Max / 256).Ceiling * 256);
+            var bb = new Box3d((bounds.Min / 256).Floor() * 256, (bounds.Max / 256).Ceiling() * 256);
             WriteLine($"bounds: {bb}");
 
             var minIncl = new V2l(bb.Min.X / TILE_SIZE, bb.Min.Y / TILE_SIZE);

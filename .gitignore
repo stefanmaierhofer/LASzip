@@ -17,3 +17,5 @@ bin/
 
 /src/Example/Properties/launchSettings.json
 /.paket/Paket.Restore.targets
+/.paket
+/.fake
