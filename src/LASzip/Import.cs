@@ -11,6 +11,8 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Aardvark.Base;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,19 +36,36 @@ namespace Aardvark.Data.Points.Import
             PointCloudFileFormat.Register(LaszipFormat);
         }
 
+        private static R[] Map<T, R>(T[] xs, Func<T, R> f)
+        {
+            var rs = new R[xs.Length];
+            for (var i = 0; i < xs.Length; i++) rs[i] = f(xs[i]);
+            return rs;
+        }
+
         /// <summary>
         /// Parses LASzip (.las, .laz) file.
         /// </summary>
         public static IEnumerable<Chunk> Chunks(string filename, ParseConfig config)
-            => LASZip.Parser.ReadPoints(filename, config.MaxChunkPointCount)
-            .Select(x => new Chunk(x.Positions, x.Colors, null, null, x.Classifications));
+            => Chunks(LASZip.Parser.ReadPoints(filename, config.MaxChunkPointCount));
 
         /// <summary>
         /// Parses LASzip (.las, .laz) stream.
         /// </summary>
         public static IEnumerable<Chunk> Chunks(this Stream stream, long streamLengthInBytes, ParseConfig config)
-            => LASZip.Parser.ReadPoints(stream, config.MaxChunkPointCount)
-            .Select(x => new Chunk(x.Positions, x.Colors, null, null, x.Classifications));
+            => Chunks(LASZip.Parser.ReadPoints(stream, config.MaxChunkPointCount));
+
+        private static IEnumerable<Chunk> Chunks(this IEnumerable<LASZip.Points> xs)
+            => xs.Select(x => new Chunk(
+                positions: x.Positions,
+                colors: x.Colors != null ? Map(x.Colors, c => new C4b(c)) : null,
+                normals: null,
+                intensities: Map(x.Intensities, i => (int)i),
+                classifications: x.Classifications,
+                velocities: null,
+                bbox: null
+                )
+            );
 
         /// <summary>
         /// Gets general info for LASzip (.las, .laz) file.

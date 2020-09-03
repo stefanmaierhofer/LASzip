@@ -42,6 +42,7 @@ namespace Example
             }
 
             dirname = Path.GetFullPath(dirname);
+            //dirname = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
             WriteLine($"{dirname}:");
 
             //Test(dirname); return;
@@ -60,7 +61,7 @@ namespace Example
                 bounds.ExtendBy(info.Bounds);
                 var cell = new Cell(info.Bounds);
 
-                var relativeFilename = filename.Substring(dirname.Length + 1).Replace('\\', '/');
+                var relativeFilename = filename[(dirname.Length + 1)..].Replace('\\', '/');
                 meta.Add(JObject.FromObject(new
                 {
                     FileName = relativeFilename,
@@ -74,8 +75,8 @@ namespace Example
                 {
                     var bb = new Box3d(ps.Positions);
                     bounds2.ExtendBy(bb);
-                    //WriteLine($"  chunk {ps.Count,20:N0} {bb,20}");
-                    //WriteLine($"        {"",20:N0} {new Cell(bb),20}");
+                    WriteLine($"  chunk {ps.Count,20:N0} {bb,20}");
+                    WriteLine($"        {"",20:N0} {bb,20}");
                 }
 
                 if (totalPointCount > 100000000) break;
@@ -114,7 +115,7 @@ namespace Example
             const double TILE_SIZE = 256.0;
             var OFFSET = new V3d(0, 0, 50);
 
-            bounds = bounds + OFFSET;
+            bounds += OFFSET;
             if (bounds.Size.Z > TILE_SIZE) throw new InvalidOperationException();
 
             var bb = new Box3d((bounds.Min / 256).Floor() * 256, (bounds.Max / 256).Ceiling() * 256);
@@ -205,24 +206,6 @@ namespace Example
                 }
             }
             WriteLine(i);
-        }
-
-        static Chunk ImmutableFilterByPosition(this Chunk self, Func<V3d, bool> predicate)
-        {
-            if (!self.HasPositions) return self;
-
-            var ps = new List<V3d>();
-            var cs = self.Colors != null ? new List<C4b>() : null;
-
-            for (var i = 0; i < self.Positions.Count; i++)
-            {
-                if (predicate(self.Positions[i]))
-                {
-                    ps.Add(self.Positions[i]);
-                    if (cs != null) cs.Add(self.Colors[i]);
-                }
-            }
-            return new Chunk(ps, cs);
         }
     }
 }
