@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2017,2018. Stefan Maierhofer.
+    Copyright 2017-2020. Stefan Maierhofer.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ namespace Example
             }
 
             dirname = Path.GetFullPath(dirname);
-            //dirname = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+            dirname = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
             WriteLine($"{dirname}:");
 
             //Test(dirname); return;

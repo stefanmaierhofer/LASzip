@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (C) 2017. Stefan Maierhofer.
+    Copyright (C) 2017-2020. Stefan Maierhofer.
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -35,11 +35,17 @@ namespace LASZip
         public readonly Box3d Bounds;
 
         /// <summary>
+        /// Raw laszip header.
         /// </summary>
-        public Info(long count, Box3d bounds)
+        public readonly laszip_header RawHeader;
+
+        /// <summary>
+        /// </summary>
+        public Info(long count, Box3d bounds, laszip_header rawHeader)
         {
             Count = count;
             Bounds = bounds;
+            RawHeader = rawHeader;
         }
     }
 
@@ -110,19 +116,13 @@ namespace LASZip
             var count = reader.header.number_of_point_records;
 
             var bounds = new Box3d(
-                new V3d(
-					reader.header.x_scale_factor * reader.header.min_x + reader.header.x_offset, 
-					reader.header.y_scale_factor * reader.header.min_y + reader.header.y_offset, 
-					reader.header.z_scale_factor * reader.header.min_z + reader.header.z_offset),
-                new V3d(
-					reader.header.x_scale_factor * reader.header.max_x + reader.header.x_offset, 
-					reader.header.y_scale_factor * reader.header.max_y + reader.header.y_offset, 
-					reader.header.z_scale_factor * reader.header.max_z + reader.header.z_offset)
+                new V3d(reader.header.min_x, reader.header.min_y, reader.header.min_z),
+                new V3d(reader.header.max_x, reader.header.max_y, reader.header.max_z)
                 );
 
             reader.laszip_close_reader();
 
-            return new Info(count, bounds);
+            return new Info(count, bounds, reader.header);
         }
 
         #endregion

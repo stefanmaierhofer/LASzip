@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (C) 2017. Stefan Maierhofer.
+    Copyright (C) 2017-2020. Stefan Maierhofer.
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
