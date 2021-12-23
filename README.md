@@ -5,4 +5,4 @@ See also
 * [Aardvark Platform Documentation](https://github.com/aardvark-platform/aardvark.docs/wiki)
 * [laszip.net](https://github.com/shintadono/laszip.net)
 
-This software repository is made available under the terms of the [GNU Affero General Public License (AGPL)](LICENSE).
+This software repository is made available under the terms of the [Apache-2.0 License](LICENSE).
