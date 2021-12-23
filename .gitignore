@@ -10,12 +10,12 @@
 /bin/*.nupkg
 /src/.vs
 /sources.lock
-/paket-files
 /.fake
 /.paket/paket.exe
 bin/
-
 /src/Example/Properties/launchSettings.json
-/.paket/Paket.Restore.targets
-/.paket
-/.fake
+
+
+#Paket dependency manager
+.paket/
+paket-files/

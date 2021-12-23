@@ -15,20 +15,21 @@
  */
 using Aardvark.Base;
 using Aardvark.Data.Points;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text.Json;
 using static System.Console;
 
 namespace Example
 {
     static class Program
     {
+        record Meta(string FileName, long Count, Box3d Bounds, Cell Cell);
+
         static void Main(string[] args)
         {
             var dirname = ".";
@@ -51,7 +52,7 @@ namespace Example
             var bounds = Box3d.Invalid;
             var bounds2 = Box3d.Invalid;
 
-            var meta = new List<JObject>();
+            var meta = new List<Meta>();
             var sw = new Stopwatch(); sw.Start();
             var i = 1;
             foreach (var filename in Directory.EnumerateFiles(dirname, "*.laz", SearchOption.AllDirectories))
@@ -62,13 +63,7 @@ namespace Example
                 var cell = new Cell(info.Bounds);
 
                 var relativeFilename = filename[(dirname.Length + 1)..].Replace('\\', '/');
-                meta.Add(JObject.FromObject(new
-                {
-                    FileName = relativeFilename,
-                    info.Count,
-                    Bounds = info.Bounds.ToString(),
-                    Cell = cell.ToString()
-                }));
+                meta.Add(new Meta(relativeFilename, info.Count, info.Bounds, cell));
 
                 WriteLine($"[{i++,7}] {relativeFilename,-40} {info.Count,20:N0} {totalPointCount,20:N0}  {cell,10:0.00}");
                 foreach (var ps in LASZip.Parser.ReadPoints(filename, 1024 * 1024))
@@ -88,7 +83,7 @@ namespace Example
             WriteLine($"{sw.Elapsed}");
 
             var metaFileName = Path.GetFullPath(@"meta.json");
-            var json = JsonConvert.SerializeObject(meta, Formatting.Indented);
+            var json = JsonSerializer.Serialize(meta, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(metaFileName, json);
             //WriteLine(json);
             WriteLine($"stored meta data: {metaFileName}");
@@ -97,19 +92,13 @@ namespace Example
         private static void Test(string dirname)
         {
             var metaFileName = Path.GetFullPath(@"meta.json");
-            var meta = JArray
-                .Parse(File.ReadAllText(metaFileName))
-                .Select(x => (
-                    filename: (string)x["FileName"],
-                    count: (long)x["Count"],
-                    bounds: Box3d.Parse((string)x["Bounds"])
-                ))
-                .ToArray()
+            var meta = JsonSerializer
+                .Deserialize<Meta[]>(File.ReadAllText(metaFileName))
                 ;
-            var area = meta.Sum(x => x.bounds.Size.X * x.bounds.Size.Y) / 1000000.0;
+            var area = meta.Sum(x => x.Bounds.Size.X * x.Bounds.Size.Y) / 1000000.0;
             WriteLine($"area: {area:N3} km²");
 
-            var bounds = new Box3d(meta.Select(x => x.bounds));
+            var bounds = new Box3d(meta.Select(x => x.Bounds));
             WriteLine($"bounds: {bounds}");
 
             const double TILE_SIZE = 256.0;
@@ -137,7 +126,7 @@ namespace Example
 
                     var localCell = new Cell(cx, cy, 0, 8);
                     var localBounds = localCell.BoundingBox - OFFSET;
-                    var candidates = meta.Where(x => x.bounds.Intersects(localBounds)).ToArray();
+                    var candidates = meta.Where(x => x.Bounds.Intersects(localBounds)).ToArray();
                     if (candidates.Length > 0)
                     {
                         var key = $"cell_{localCell.X}_{localCell.Y}_{localCell.Z}_{localCell.Exponent}";
@@ -154,11 +143,11 @@ namespace Example
 
 
                         var sw = new Stopwatch(); sw.Start();
-                        var localCount = candidates.Sum(x => x.count);
+                        var localCount = candidates.Sum(x => x.Count);
                         if (localCount > maxCount) maxCount = localCount;
                         var chunks = candidates
                             .SelectMany(x => Aardvark.Data.Points
-                                .Import.Laszip.Chunks(Path.Combine(dirname, x.filename), importConfig)
+                                .Import.Laszip.Chunks(Path.Combine(dirname, x.FileName), importConfig)
                                 .Select(y => y.ImmutableFilterByPosition(localBounds.Contains))
                                 )
                             .Where(x => x.Count > 0)
